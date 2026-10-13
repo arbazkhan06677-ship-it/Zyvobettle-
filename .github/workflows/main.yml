@@ -33,3 +33,6 @@ jobs:
         with:
           name: ZyvoBattle-APK
           path: app/build/outputs/apk/debug/*.apk
+run: |
+  chmod +x gradlew
+  ./gradlew assembleDebug
