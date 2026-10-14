@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZyvoBattle Admin</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#101010;
+ color:white;
+ font-family:Arial,sans-serif;
+ padding:18px;
+}
+header{
+ background:#1c1c1c;
+ padding:20px;
+ border-radius:12px;
+ border-left:5px solid #ff3030;
+}
+h1{margin:0;color:#ff3030}
+p{color:#bbb}
+.card{
+ background:#202020;
+ padding:16px;
+ margin-top:18px;
+ border-radius:12px;
+}
+input,select,button{
+ width:100%;
+ padding:12px;
+ margin-top:10px;
+ border-radius:7px;
+ border:1px solid #444;
+ font-size:15px;
+}
+input,select{
+ background:#111;
+ color:white;
+}
+button{
+ background:#ff3030;
+ color:white;
+ font-weight:bold;
+ border:0;
+ cursor:pointer;
+}
+button:active{opacity:.8}
+.item{
+ background:#151515;
+ border:1px solid #333;
+ padding:12px;
+ margin-top:10px;
+ border-radius:8px;
+}
+small{color:#aaa}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>⚔️ ZyvoBattle</h1>
+<p>Admin Panel — Demo Version</p>
+</header>
+
+<div class="card">
+<h2>➕ Create Tournament</h2>
+
+<input id="name" placeholder="Tournament name">
+
+<select id="mode">
+<option>Solo</option>
+<option>Duo</option>
+<option>Squad</option>
+<option>Clash Squad</option>
+</select>
+
+<input id="entry" type="number" min="0"
+placeholder="Entry fee (₹)">
+
+<input id="prize" type="number" min="0"
+placeholder="Winner prize (₹)">
+
+<input id="kills" type="number" min="0"
+placeholder="Per kill reward (₹)">
+
+<input id="date" type="datetime-local">
+
+<button onclick="addTournament()">
+Create Demo Tournament
+</button>
+</div>
+
+<div class="card">
+<h2>🏆 Tournaments</h2>
+<div id="tournaments"></div>
+</div>
+
+<div class="card">
+<h2>📊 Update Demo Score</h2>
+
+<input id="player" placeholder="Player name">
+
+<input id="score" type="number" min="0"
+placeholder="Kill points">
+
+<button onclick="updateScore()">
+Save Demo Score
+</button>
+
+<div id="scores"></div>
+</div>
+
+<div class="card">
+<h2>📋 Admin Activity</h2>
+<div id="activity"></div>
+<button onclick="clearDemo()">Clear Demo Data</button>
+</div>
+
+<p><small>
+Demo only. Data is stored in this browser on this device.
+No real payments, room IDs, shared player data or secure admin login.
+</small></p>
+
+<script>
+function read(key, fallback){
+ try{
+  return JSON.parse(localStorage.getItem(key)) || fallback;
+ }catch(e){
+  return fallback;
+ }
+}
+
+function save(key, value){
+ localStorage.setItem(key, JSON.stringify(value));
+}
+
+function log(message){
+ let items=read("zyvoAdminActivity",[]);
+ items.unshift(message);
+ save("zyvoAdminActivity",items.slice(0,20));
+ render();
+}
+
+function addTournament(){
+ let name=document.getElementById("name").value.trim();
+ let mode=document.getElementById("mode").value;
+ let entry=Number(document.getElementById("entry").value);
+ let prize=Number(document.getElementById("prize").value);
+ let kills=Number(document.getElementById("kills").value);
+ let date=document.getElementById("date").value;
+
+ if(!name){
+  alert("Tournament name enter karo");
+  return;
+ }
+
+ if(entry<0 || prize<0 || kills<0){
+  alert("Amount zero ya usse zyada hona chahiye");
+  return;
+ }
+
+ let list=read("zyvoTournaments",[]);
+
+ list.unshift({
+  id:Date.now(),
+  name:name,
+  mode:mode,
+  entry:entry,
+  prize:prize,
+  kills:kills,
+  date:date
+ });
+
+ save("zyvoTournaments",list);
+
+ document.getElementById("name").value="";
+ document.getElementById("entry").value="";
+ document.getElementById("prize").value="";
+ document.getElementById("kills").value="";
+ document.getElementById("date").value="";
+
+ log("Created demo tournament: "+name);
+}
+
+function updateScore(){
+ let player=document.getElementById("player").value.trim();
+ let score=Number(document.getElementById("score").value);
+
+ if(!player){
+  alert("Player name enter karo");
+  return;
+ }
+
+ if(score<0){
+  alert("Points negative nahi ho sakte");
+  return;
+ }
+
+ let list=read("zyvoScores",[]);
+ let found=list.find(p=>p.name.toLowerCase()===player.toLowerCase());
+
+ if(found){
+  found.score=score;
+ }else{
+  list.push({name:player,score:score});
+ }
+
+ list.sort((a,b)=>b.score-a.score);
+ save("zyvoScores",list);
+
+ document.getElementById("player").value="";
+ document.getElementById("score").value="";
+
+ log("Updated demo score: "+player);
+}
+
+function removeTournament(id){
+ if(!confirm("Is demo tournament ko delete karein?"))return;
+
+ let list=read("zyvoTournaments",[]);
+ list=list.filter(t=>t.id!==id);
+ save("zyvoTournaments",list);
+ log("Deleted demo tournament");
+}
+
+function render(){
+ let tournaments=read("zyvoTournaments",[]);
+ let scores=read("zyvoScores",[]);
+ let activity=read("zyvoAdminActivity",[]);
+
+ document.getElementById("tournaments").innerHTML=
+ tournaments.length ? tournaments.map(t=>`
+ <div class="item">
+ <b>${esc(t.name)}</b><br>
+ Mode: ${esc(t.mode)}<br>
+ Entry: ₹${t.entry} |
+ Prize: ₹${t.prize} |
+ Per kill: ₹${t.kills}<br>
+ <small>${esc(t.date||"Date not set")}</small>
+ <button onclick="removeTournament(${t.id})">Delete Demo</button>
+ </div>`).join("") : "<p>No tournaments created yet.</p>";
+
+ document.getElementById("scores").innerHTML=
+ scores.length ? scores.map((p,i)=>`
+ <div class="item">
+ #${i+1} — ${esc(p.name)}: ${p.score} points
+ </div>`).join("") : "<p>No scores yet.</p>";
+
+ document.getElementById("activity").innerHTML=
+ activity.length ? activity.map(a=>
+ `<div class="item">${esc(a)}</div>`).join("") :
+ "<p>No activity yet.</p>";
+}
+
+function esc(value){
+ return String(value).replace(/[&<>"']/g,function(c){
+  return {
+   "&":"&amp;",
+   "<":"&lt;",
+   ">":"&gt;",
+   '"':"&quot;",
+   "'":"&#39;"
+  }[c];
+ });
+}
+
+function clearDemo(){
+ if(!confirm("Saara local demo data clear karna hai?"))return;
+
+ ["zyvoTournaments","zyvoScores","zyvoAdminActivity"]
+ .forEach(k=>localStorage.removeItem(k));
+
+ render();
+}
+
+render();
+</script>
+
+</body>
+</html>
