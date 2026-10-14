@@ -1,167 +1,113 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZyvoBattle - Gaming Tournaments</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #101010;
-      color: white;
-    }
-
-    header {
-      background: #1a1a1a;
-      padding: 20px;
-      text-align: center;
-      border-bottom: 2px solid #ff3030;
-    }
-
-    header h1 {
-      color: #ff3030;
-      margin: 0;
-      font-size: 30px;
-    }
-
-    header p {
-      color: #ccc;
-      margin-bottom: 0;
-    }
-
-    .hero {
-      padding: 35px 20px;
-      text-align: center;
-      background: linear-gradient(135deg, #300000, #111);
-    }
-
-    .hero h2 {
-      font-size: 27px;
-    }
-
-    .hero button, .join {
-      background: #ff3030;
-      border: none;
-      color: white;
-      padding: 12px 22px;
-      border-radius: 6px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    main {
-      padding: 20px;
-      max-width: 700px;
-      margin: auto;
-    }
-
-    .card {
-      background: #202020;
-      border: 1px solid #383838;
-      border-radius: 12px;
-      padding: 18px;
-      margin-bottom: 18px;
-    }
-
-    .card h3 {
-      color: #ff4545;
-      margin-top: 0;
-    }
-
-    .tag {
-      display: inline-block;
-      background: #303030;
-      padding: 6px 10px;
-      border-radius: 5px;
-      margin-bottom: 12px;
-    }
-
-    #message {
-      color: #9cff9c;
-      margin-top: 15px;
-    }
-
-    footer {
-      text-align: center;
-      color: #aaa;
-      padding: 25px;
-      border-top: 1px solid #333;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZyvoBattle — Free Fire MAX Tournaments</title>
+<style>
+:root{--bg:#0b0b0f;--panel:#17171d;--panel2:#202027;--red:#ff3038;--text:#f5f5f7;--muted:#aaaab5;--line:#34343e}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+.wrap{max-width:900px;margin:auto;padding:16px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 0;border-bottom:1px solid var(--line)}
+.brand{font-size:23px;font-weight:900;letter-spacing:.2px}.brand span{color:var(--red)}button{border:0;border-radius:9px;background:var(--red);color:white;font-weight:800;padding:11px 14px;cursor:pointer}button.secondary{background:#303039}button:disabled{opacity:.5;cursor:not-allowed}
+.hero{padding:24px 0 10px}.eyebrow{color:var(--red);font-weight:800;text-transform:uppercase;letter-spacing:1px;font-size:12px}.hero h1{font-size:clamp(28px,6vw,44px);line-height:1.1;margin:8px 0}.muted{color:var(--muted)}.notice{background:#28191b;border:1px solid #613036;padding:12px;border-radius:10px;color:#ffdadd;margin:14px 0}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:24px 0 12px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px;min-width:0}.tag{display:inline-block;background:#392023;color:#ff9ca1;padding:3px 8px;border-radius:20px;font-size:12px;font-weight:800}.card h3{margin:10px 0 6px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.stat{background:var(--panel2);padding:9px;border-radius:8px}.stat small{display:block;color:var(--muted)}.stat b{font-size:15px}
+input,select{width:100%;padding:12px;background:#101015;color:white;border:1px solid #454550;border-radius:9px;font:inherit;margin:5px 0 10px}label{font-size:13px;color:#ddd}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hidden{display:none}.listrow{padding:10px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px}.listrow:last-child{border:0}.pill{color:#ffb3b6;font-size:12px}.footer{color:var(--muted);font-size:12px;padding:28px 0 12px}
+@media(max-width:480px){.wrap{padding:13px}.row{grid-template-columns:1fr}.top{align-items:flex-start}.brand{font-size:20px}}
+</style>
 </head>
-
 <body>
+<div class="wrap">
+<header class="top"><div class="brand">⚔️ ZYVO<span>BATTLE</span></div><button id="loginBtn">Sign in with Google</button></header>
+<section class="hero"><div class="eyebrow">Free Fire MAX • Community tournaments</div><h1>Play smart.<br><span style="color:var(--red)">Rise to the top.</span></h1><p class="muted">Browse demo tournaments, register your interest and track sample leaderboard scores.</p></section>
+<div class="notice"><b>Demo / safety notice:</b> This is an early version. No entry fees, deposits, withdrawals or real prizes are processed. Do not submit payment details.</div>
+<section class="card">
+<div class="section-title" style="margin-top:0"><h2 style="margin:0;font-size:19px">Player profile</h2><span id="authStatus" class="pill">Signed out</span></div>
+<div id="profileText" class="muted">Sign in with Google to view your profile and register interest.</div>
+<button id="logoutBtn" class="secondary hidden" style="margin-top:12px">Sign out</button>
+</section>
+<div class="section-title"><h2 style="margin:0">Tournaments</h2><span class="muted" id="tournamentCount">Loading…</span></div>
+<div id="tournaments" class="grid"><div class="card">Loading tournaments…</div></div>
+<section class="card" style="margin-top:24px">
+<div class="section-title" style="margin-top:0"><h2 style="margin:0;font-size:19px">Leaderboard</h2><span class="muted">Demo scores</span></div>
+<div id="leaderboard" class="muted">Loading leaderboard…</div>
+</section>
+<div class="footer">© 2026 ZyvoBattle • Early demo. Google sign-in and database access require correct Firebase setup and Firestore security rules.</div>
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, getDocs, addDoc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  <header>
-    <h1>ZYVOBATTLE</h1>
-    <p>Play • Compete • Win</p>
-  </header>
+const firebaseConfig = {
+  apiKey: "AIzaSyDJpr9gktLVZgPOF2K89mOlubJrddw9OT0",
+  authDomain: "zyvobettle.firebaseapp.com",
+  projectId: "zyvobettle",
+  storageBucket: "zyvobettle.firebasestorage.app",
+  messagingSenderId: "335264733948",
+  appId: "1:335264733948:web:30217c54d3e15c8b1bd579",
+  measurementId: "G-DKB22GRV6R"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+const $ = id => document.getElementById(id);
+let currentUser = null;
+const money = n => "₹" + (Number(n)||0);
+const safe = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-  <section class="hero">
-    <h2>Welcome to ZyvoBattle</h2>
-    <p>Your gaming tournament destination.</p>
-    <button onclick="showTournaments()">Explore Tournaments</button>
-  </section>
-
-  <main>
-    <h2>🎮 Upcoming Tournaments</h2>
-
-    <div class="card">
-      <span class="tag">Free Entry Demo</span>
-      <h3>Free Fire MAX - Solo Match</h3>
-      <p>Mode: Solo</p>
-      <p>Entry Fee: ₹0</p>
-      <p>Prize: Demo tournament</p>
-      <button class="join" onclick="joinTournament('Solo Match')">
-        Register Interest
-      </button>
-    </div>
-
-    <div class="card">
-      <span class="tag">Free Entry Demo</span>
-      <h3>Free Fire MAX - Squad Match</h3>
-      <p>Mode: Squad</p>
-      <p>Entry Fee: ₹0</p>
-      <p>Prize: Demo tournament</p>
-      <button class="join" onclick="joinTournament('Squad Match')">
-        Register Interest
-      </button>
-    </div>
-
-    <section class="card">
-      <h3>🏆 Player Leaderboard</h3>
-      <p>Leaderboard will appear here after player results are added.</p>
-      <p><small>Demo version: results are not connected to a shared database.</small></p>
-    </section>
-
-    <p id="message"></p>
-  </main>
-
-  <footer>
-    <p>© 2026 ZyvoBattle</p>
-    <p>Official tournament details will be announced here.</p>
-  </footer>
-
-  <script>
-    function showTournaments() {
-      document.querySelector("main").scrollIntoView({
-        behavior: "smooth"
-      });
-    }
-
-    function joinTournament(name) {
-      document.getElementById("message").textContent =
-        "You selected " + name +
-        ". Registration is not connected yet.";
-    }
-  </script>
-
+$("loginBtn").addEventListener("click", async()=>{
+ try { await signInWithPopup(auth,provider); }
+ catch(e){ alert("Google sign-in failed: "+e.message+"\nFirebase Authentication mein Google provider enabled hai aur Authorized domains mein GitHub Pages domain add hai, check karein."); }
+});
+$("logoutBtn").addEventListener("click", async()=>{try{await signOut(auth)}catch(e){alert(e.message)}});
+onAuthStateChanged(auth,user=>{
+ currentUser=user;
+ $("authStatus").textContent=user?"Signed in":"Signed out";
+ $("loginBtn").classList.toggle("hidden",!!user);
+ $("logoutBtn").classList.toggle("hidden",!user);
+ $("profileText").innerHTML=user
+ ? `<b>${safe(user.displayName||"Player")}</b><br><span class="muted">${safe(user.email||"")}</span><br><small class="muted">Profile is read from Google sign-in. Do not share your private account details.</small>`
+ : "Sign in with Google to view your profile and register interest.";
+});
+async function loadTournaments(){
+ const root=$("tournaments");
+ try{
+  const snap=await getDocs(collection(db,"tournaments"));
+  const list=snap.docs.map(d=>({id:d.id,...d.data()}));
+  $("tournamentCount").textContent=list.length+" found";
+  if(!list.length){root.innerHTML='<div class="card">No tournaments yet. Admin can add tournament documents to the <code>tournaments</code> collection.</div>';return;}
+  root.innerHTML=list.map(t=>`<article class="card"><span class="tag">${safe(t.mode||"Tournament")}</span><h3>${safe(t.name||"Untitled tournament")}</h3><div class="stats"><div class="stat"><small>Entry fee</small><b>${money(t.entryFee)}</b></div><div class="stat"><small>Prize</small><b>${money(t.prize)}</b></div><div class="stat"><small>Per kill</small><b>${money(t.perKill)}</b></div></div><p class="muted">${safe(t.status||"upcoming")}</p><button data-register="${safe(t.id)}">Register interest</button></article>`).join("");
+  root.querySelectorAll("[data-register]").forEach(btn=>btn.addEventListener("click",()=>register(btn.dataset.register)));
+ }catch(e){
+  $("tournamentCount").textContent="Unavailable";
+  root.innerHTML='<div class="card">Could not load tournaments. Check internet connection and Firestore rules.</div>';
+  console.error(e);
+ }
+}
+async function register(tournamentId){
+ if(!currentUser){alert("Please sign in with Google first.");return;}
+ if(!confirm("Register your interest for this demo tournament? No payment will be taken."))return;
+ try{
+  await addDoc(collection(db,"registrations"),{
+   tournamentId,
+   uid:currentUser.uid,
+   playerName:currentUser.displayName||"Player",
+   email:currentUser.email||"",
+   createdAt:new Date().toISOString(),
+   status:"interest-only"
+  });
+  alert("Interest registered successfully. This is not a confirmed tournament entry.");
+ }catch(e){alert("Registration could not be saved. Check Firestore rules: "+e.message);}
+}
+async function loadLeaderboard(){
+ try{
+  const snap=await getDocs(query(collection(db,"leaderboard"),orderBy("points","desc"),limit(20)));
+  const rows=snap.docs.map(d=>d.data());
+  $("leaderboard").innerHTML=rows.length?rows.map((r,i)=>`<div class="listrow"><span><b>#${i+1}</b> &nbsp; ${safe(r.playerName||"Player")}</span><b>${Number(r.points)||0} pts</b></div>`).join(""):"No scores yet. Add demo score documents to the leaderboard collection.";
+ }catch(e){$("leaderboard").textContent="Leaderboard unavailable. Check Firestore rules or create the leaderboard collection.";console.error(e);}
+}
+loadTournaments();loadLeaderboard();
+</script>
 </body>
 </html>
