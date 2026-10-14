@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZyvoBattle - Gaming Tournaments</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #101010;
+      color: white;
+    }
+
+    header {
+      background: #1a1a1a;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 2px solid #ff3030;
+    }
+
+    header h1 {
+      color: #ff3030;
+      margin: 0;
+      font-size: 30px;
+    }
+
+    header p {
+      color: #ccc;
+      margin-bottom: 0;
+    }
+
+    .hero {
+      padding: 35px 20px;
+      text-align: center;
+      background: linear-gradient(135deg, #300000, #111);
+    }
+
+    .hero h2 {
+      font-size: 27px;
+    }
+
+    .hero button, .join {
+      background: #ff3030;
+      border: none;
+      color: white;
+      padding: 12px 22px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    main {
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    .card {
+      background: #202020;
+      border: 1px solid #383838;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .card h3 {
+      color: #ff4545;
+      margin-top: 0;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #303030;
+      padding: 6px 10px;
+      border-radius: 5px;
+      margin-bottom: 12px;
+    }
+
+    #message {
+      color: #9cff9c;
+      margin-top: 15px;
+    }
+
+    footer {
+      text-align: center;
+      color: #aaa;
+      padding: 25px;
+      border-top: 1px solid #333;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>ZYVOBATTLE</h1>
+    <p>Play • Compete • Win</p>
+  </header>
+
+  <section class="hero">
+    <h2>Welcome to ZyvoBattle</h2>
+    <p>Your gaming tournament destination.</p>
+    <button onclick="showTournaments()">Explore Tournaments</button>
+  </section>
+
+  <main>
+    <h2>🎮 Upcoming Tournaments</h2>
+
+    <div class="card">
+      <span class="tag">Free Entry Demo</span>
+      <h3>Free Fire MAX - Solo Match</h3>
+      <p>Mode: Solo</p>
+      <p>Entry Fee: ₹0</p>
+      <p>Prize: Demo tournament</p>
+      <button class="join" onclick="joinTournament('Solo Match')">
+        Register Interest
+      </button>
+    </div>
+
+    <div class="card">
+      <span class="tag">Free Entry Demo</span>
+      <h3>Free Fire MAX - Squad Match</h3>
+      <p>Mode: Squad</p>
+      <p>Entry Fee: ₹0</p>
+      <p>Prize: Demo tournament</p>
+      <button class="join" onclick="joinTournament('Squad Match')">
+        Register Interest
+      </button>
+    </div>
+
+    <section class="card">
+      <h3>🏆 Player Leaderboard</h3>
+      <p>Leaderboard will appear here after player results are added.</p>
+      <p><small>Demo version: results are not connected to a shared database.</small></p>
+    </section>
+
+    <p id="message"></p>
+  </main>
+
+  <footer>
+    <p>© 2026 ZyvoBattle</p>
+    <p>Official tournament details will be announced here.</p>
+  </footer>
+
+  <script>
+    function showTournaments() {
+      document.querySelector("main").scrollIntoView({
+        behavior: "smooth"
+      });
+    }
+
+    function joinTournament(name) {
+      document.getElementById("message").textContent =
+        "You selected " + name +
+        ". Registration is not connected yet.";
+    }
+  </script>
+
+</body>
+</html>
