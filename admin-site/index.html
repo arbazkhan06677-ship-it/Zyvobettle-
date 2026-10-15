@@ -1,44 +1,91 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ZyvoBattle — Admin Panel</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZyvoBattle Live Admin</title>
 <style>
-:root{--bg:#0b0b0f;--panel:#17171d;--red:#ff3038;--green:#00c853;--text:#f5f5f7;--line:#34343e}
-body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 sans-serif;padding:14px}
-.wrap{max-width:600px;margin:auto}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:12px}
-input{width:100%;padding:12px;background:#101015;color:#fff;border:1px solid #454550;border-radius:8px;margin:6px 0 12px}
-button{border:0;border-radius:8px;background:var(--red);color:#fff;font-weight:bold;padding:12px;width:100%;cursor:pointer}
-.hidden{display:none}
+*{box-sizing:border-box}
+body{margin:0;background:#101010;color:white;font-family:Arial,sans-serif;padding:15px}
+header{background:#1c1c1c;padding:16px;border-radius:12px;border-left:5px solid #ff3030}
+h1,h2{margin:0 0 10px 0;color:#ff3030}
+.card{background:#1e1e24;padding:15px;margin-top:16px;border-radius:12px;border:1px solid #333}
+input,select,button{width:100%;padding:11px;margin-top:8px;border-radius:8px;border:1px solid #444;font-size:14px}
+input,select{background:#111;color:white}
+button{background:#ff3030;color:white;font-weight:bold;border:0;cursor:pointer}
+button.green{background:#00c853}
+.item{background:#141418;border:1px solid #333;padding:12px;margin-top:10px;border-radius:8px}
+small{color:#aaa}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h2>🛡️ Admin Control Panel</h2>
 
-  <!-- PIN LOGIN -->
-  <div id="loginBox" class="card">
-    <h3>Enter Admin PIN</h3>
-    <input id="pin" type="password" placeholder="PIN (1234)">
-    <button id="loginBtn">Login</button>
-  </div>
+<header>
+  <h1>⚔️ ZyvoBattle Admin</h1>
+  <small>Connected Live with Firebase Database</small>
+</header>
 
-  <!-- ADMIN DASHBOARD -->
-  <div id="adminBox" class="card hidden">
-    <h3>Create Tournament</h3>
-    <input id="matchName" placeholder="Match Name (e.g. Free Fire Solo Classic)">
-    <input id="entryFee" type="number" placeholder="Entry Fee (₹)">
-    <input id="prize" type="number" placeholder="Prize Pool (₹)">
-    <input id="roomId" placeholder="Room ID & Password">
-    <button id="createMatchBtn" class="green">Publish Match</button>
-  </div>
+<!-- 1. UPI SETTING -->
+<div class="card">
+  <h2>💳 Admin UPI Setting</h2>
+  <input id="upiId" placeholder="Apni UPI ID dalein (Jaise: 9876543210@paytm)">
+  <button onclick="saveUpi()">Save UPI ID</button>
+</div>
+
+<!-- 2. CREATE TOURNAMENT -->
+<div class="card">
+  <h2>➕ Create Live Tournament</h2>
+  <input id="tName" placeholder="Tournament Name (e.g. Bermuda Night Match #1)">
+  <select id="tMode">
+    <option>Solo</option>
+    <option>Duo</option>
+    <option>Squad</option>
+    <option>Clash Squad</option>
+  </select>
+  <input id="tEntry" type="number" placeholder="Entry Fee (₹)">
+  <input id="tPrize" type="number" placeholder="Winner Prize (₹)">
+  <input id="tKill" type="number" placeholder="Per Kill Reward (₹)">
+  <input id="tDate" placeholder="Match Date & Time (e.g. Today 8:00 PM)">
+  <button onclick="createMatch()">Publish Match Live</button>
+</div>
+
+<!-- 3. MANAGE TOURNAMENTS & ROOM ID -->
+<div class="card">
+  <h2>🏆 Manage Matches & Room ID</h2>
+  <div id="matchList">Loading matches...</div>
+</div>
+
+<!-- 4. WALLET REQUESTS (DEPOSIT / WITHDRAW) -->
+<div class="card">
+  <h2>💰 Wallet Requests (Deposit / Withdraw)</h2>
+  <div id="walletList">Loading requests...</div>
+</div>
+
+<!-- 5. SEND PRIZE / ADD MONEY DIRECTLY -->
+<div class="card">
+  <h2>🎁 Send Winning Prize to Player Wallet</h2>
+  <input id="winUid" type="number" placeholder="Player Free Fire UID">
+  <input id="winAmt" type="number" placeholder="Winning Amount to Add (₹)">
+  <button class="green" onclick="sendPrize()">Add Money to Player Wallet</button>
+</div>
+
+<!-- 6. LEADERBOARD UPDATE -->
+<div class="card">
+  <h2>📊 Update Leaderboard</h2>
+  <input id="lbName" placeholder="Player Name">
+  <input id="lbPts" type="number" placeholder="Total Kill Points">
+  <button onclick="addLeaderboard()">Save Leaderboard Score</button>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeFirestore, collection, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const pin = prompt("Enter Admin PIN (Default: 1234):");
+if(pin !== "1234"){
+  document.body.innerHTML = "<h2 style='color:red;text-align:center'>Access Denied! Wrong Admin PIN.</h2>";
+  throw new Error("Unauthorized");
+}
 
 const firebaseConfig = {
   apiKey: "AIzaSyDJpr9gktLVZgPOF2K89mOlubJrddw9OT0",
@@ -46,43 +93,112 @@ const firebaseConfig = {
   projectId: "zyvobettle",
   storageBucket: "zyvobettle.firebasestorage.app",
   messagingSenderId: "335264733948",
-  appId: "1:335264733948:web:30217c54d3e15c8b1bd579"
+  appId: "1:335264733948:web:30217c54d3e15c8b1bd579",
+  measurementId: "G-DKB22GRV6R"
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const db = initializeFirestore(app, { experimentalForceLongPolling: true });
 const $ = id => document.getElementById(id);
 
-$("loginBtn").addEventListener("click", () => {
-  if($("pin").value === "1234"){
-    $("loginBox").classList.add("hidden");
-    $("adminBox").classList.remove("hidden");
-  } else {
-    alert("Galat PIN! (Sahi PIN: 1234)");
-  }
+window.saveUpi = async () => {
+  const upiId = $("upiId").value.trim();
+  if(!upiId) return alert("UPI ID dalein!");
+  await setDoc(doc(db, "settings", "config"), { upiId });
+  alert("✅ UPI ID update ho gayi!");
+};
+
+window.createMatch = async () => {
+  const name = $("tName").value.trim();
+  const mode = $("tMode").value;
+  const entryFee = Number($("tEntry").value) || 0;
+  const prize = Number($("tPrize").value) || 0;
+  const perKill = Number($("tKill").value) || 0;
+  const date = $("tDate").value.trim();
+
+  if(!name) return alert("Tournament name dalein!");
+  await addDoc(collection(db, "tournaments"), {
+    name, mode, entryFee, prize, perKill, date, roomId: "", roomPass: "", joinedPlayers: []
+  });
+  $("tName").value=""; $("tEntry").value=""; $("tPrize").value=""; $("tKill").value=""; $("tDate").value="";
+  alert("🔥 Match Live publish ho gaya!");
+};
+
+onSnapshot(collection(db, "tournaments"), snap => {
+  const list = snap.docs.map(d => ({id: d.id, ...d.data()}));
+  $("matchList").innerHTML = list.length ? list.map(t => {
+    const players = (t.joinedPlayers || []).map(p => `${p.name} (${p.uid})`).join(", ") || "None";
+    return `
+    <div class="item">
+      <b>${t.name}</b> (${t.mode}) — Entry: ₹${t.entryFee} | Prize: ₹${t.prize}<br>
+      <small>Joined (${(t.joinedPlayers||[]).length}): ${players}</small>
+      <input id="rid_${t.id}" placeholder="Room ID" value="${t.roomId || ''}">
+      <input id="rpass_${t.id}" placeholder="Room Password" value="${t.roomPass || ''}">
+      <button class="green" onclick="updateRoom('${t.id}')">Update Room ID & Pass</button>
+      <button onclick="delMatch('${t.id}')" style="background:#444;margin-top:6px">Delete Match</button>
+    </div>`;
+  }).join("") : "<p>No matches created yet.</p>";
 });
 
-$("createMatchBtn").addEventListener("click", async () => {
-  const name = $("matchName").value.trim();
-  const entryFee = Number($("entryFee").value);
-  const prize = Number($("prize").value);
-  const roomId = $("roomId").value.trim();
+window.updateRoom = async (id) => {
+  const roomId = $("rid_" + id).value.trim();
+  const roomPass = $("rpass_" + id).value.trim();
+  await updateDoc(doc(db, "tournaments", id), { roomId, roomPass });
+  alert("✅ Room ID & Password players ko bhej diya gaya!");
+};
 
-  if(!name) return alert("Match ka naam daalein!");
+window.delMatch = async (id) => {
+  if(confirm("Delete this match?")) await deleteDoc(doc(db, "tournaments", id));
+};
 
-  try {
-    await addDoc(collection(db, "tournaments"), {
-      name, entryFee, prize, roomId, createdAt: Date.now()
-    });
-    alert("Tournament successfully publish ho gaya!");
-    $("matchName").value = "";
-    $("entryFee").value = "";
-    $("prize").value = "";
-    $("roomId").value = "";
-  } catch(e) {
-    alert("Error: " + e.message);
-  }
+onSnapshot(collection(db, "walletRequests"), snap => {
+  const reqs = snap.docs.map(d => ({id: d.id, ...d.data()})).filter(r => r.status === "pending");
+  $("walletList").innerHTML = reqs.length ? reqs.map(r => `
+    <div class="item">
+      <b>${r.type.toUpperCase()}</b> — ₹${r.amount}<br>
+      Player: ${r.name} (UID: ${r.uid})<br>
+      <b>UTR / UPI:</b> ${r.detail}<br>
+      ${r.type === "deposit" ? `<button class="green" onclick="approveDep('${r.id}','${r.uid}',${r.amount})">Approve & Add ₹${r.amount}</button>` : `<button class="green" onclick="markDone('${r.id}')">Mark Paid</button>`}
+      <button onclick="markDone('${r.id}')" style="background:#444">Reject / Remove</button>
+    </div>
+  `).join("") : "<p>No pending wallet requests.</p>";
 });
+
+window.approveDep = async (reqId, uid, amount) => {
+  const uRef = doc(db, "users", uid);
+  const snap = await getDoc(uRef);
+  if(snap.exists()){
+    const cur = snap.data().wallet || 0;
+    await updateDoc(uRef, { wallet: cur + Number(amount) });
+  }
+  await updateDoc(doc(db, "walletRequests", reqId), { status: "approved" });
+  alert("✅ Player ke wallet mein ₹" + amount + " add ho gaye!");
+};
+
+window.markDone = async (reqId) => {
+  await updateDoc(doc(db, "walletRequests", reqId), { status: "done" });
+};
+
+window.sendPrize = async () => {
+  const uid = $("winUid").value.trim();
+  const amt = Number($("winAmt").value);
+  if(!uid || amt <= 0) return alert("Valid FF UID aur Amount dalein!");
+  const uRef = doc(db, "users", uid);
+  const snap = await getDoc(uRef);
+  if(!snap.exists()) return alert("Is FF UID ka player nahi mila!");
+  await updateDoc(uRef, { wallet: (snap.data().wallet || 0) + amt });
+  $("winUid").value = ""; $("winAmt").value = "";
+  alert("✅ ₹" + amt + " player ke wallet mein bhej diye gaye!");
+};
+
+window.addLeaderboard = async () => {
+  const playerName = $("lbName").value.trim();
+  const points = Number($("lbPts").value) || 0;
+  if(!playerName) return alert("Player name dalein!");
+  await addDoc(collection(db, "leaderboard"), { playerName, points });
+  $("lbName").value = ""; $("lbPts").value = "";
+  alert("✅ Leaderboard score added!");
+};
 </script>
 </body>
 </html>
