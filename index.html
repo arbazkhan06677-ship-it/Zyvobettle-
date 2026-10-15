@@ -2,41 +2,120 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>ZyvoBattle — Free Fire MAX Tournaments</title>
 <style>
-:root{--bg:#0b0b0f;--panel:#17171d;--panel2:#202027;--red:#ff3038;--text:#f5f5f7;--muted:#aaaab5;--line:#34343e}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-.wrap{max-width:900px;margin:auto;padding:16px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 0;border-bottom:1px solid var(--line)}
-.brand{font-size:23px;font-weight:900;letter-spacing:.2px}.brand span{color:var(--red)}button{border:0;border-radius:9px;background:var(--red);color:white;font-weight:800;padding:11px 14px;cursor:pointer}button.secondary{background:#303039}button:disabled{opacity:.5;cursor:not-allowed}
-.hero{padding:24px 0 10px}.eyebrow{color:var(--red);font-weight:800;text-transform:uppercase;letter-spacing:1px;font-size:12px}.hero h1{font-size:clamp(28px,6vw,44px);line-height:1.1;margin:8px 0}.muted{color:var(--muted)}.notice{background:#28191b;border:1px solid #613036;padding:12px;border-radius:10px;color:#ffdadd;margin:14px 0}
-.section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:24px 0 12px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px;min-width:0}.tag{display:inline-block;background:#392023;color:#ff9ca1;padding:3px 8px;border-radius:20px;font-size:12px;font-weight:800}.card h3{margin:10px 0 6px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.stat{background:var(--panel2);padding:9px;border-radius:8px}.stat small{display:block;color:var(--muted)}.stat b{font-size:15px}
-input,select{width:100%;padding:12px;background:#101015;color:white;border:1px solid #454550;border-radius:9px;font:inherit;margin:5px 0 10px}label{font-size:13px;color:#ddd}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hidden{display:none}.listrow{padding:10px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px}.listrow:last-child{border:0}.pill{color:#ffb3b6;font-size:12px}.footer{color:var(--muted);font-size:12px;padding:28px 0 12px}
-@media(max-width:480px){.wrap{padding:13px}.row{grid-template-columns:1fr}.top{align-items:flex-start}.brand{font-size:20px}}
+:root{--bg:#0b0b0f;--panel:#17171d;--panel2:#202027;--red:#ff3038;--green:#00c853;--text:#f5f5f7;--muted:#aaaab5;--line:#34343e}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,sans-serif;padding-bottom:75px}
+.wrap{max-width:600px;margin:auto;padding:14px}
+.top{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)}
+.brand{font-size:21px;font-weight:900}.brand span{color:var(--red)}
+.wallet-badge{background:var(--panel2);border:1px solid var(--line);padding:6px 12px;border-radius:20px;font-weight:800;color:#ffd700;cursor:pointer}
+button{border:0;border-radius:9px;background:var(--red);color:white;font-weight:800;padding:11px 14px;cursor:pointer;width:100%;font-size:14px}
+button.secondary{background:#303039}
+button.green{background:var(--green)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px;margin-top:14px}
+.tag{display:inline-block;background:#392023;color:#ff9ca1;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:800}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.stat{background:var(--panel2);padding:8px;border-radius:8px;text-align:center}
+.stat small{display:block;color:var(--muted);font-size:11px}
+.stat b{font-size:15px;color:#fff}
+input,select{width:100%;padding:12px;background:#101015;color:white;border:1px solid #454550;border-radius:9px;margin:6px 0 12px;font-size:14px}
+.room-box{background:#122b1d;border:1px dashed var(--green);padding:10px;border-radius:8px;margin:10px 0;text-align:center}
+.hidden{display:none}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#121218;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 0;z-index:99}
+.nav button{background:none;color:var(--muted);padding:6px;font-size:12px;width:auto}
+.nav button.active{color:var(--red)}
+.listrow{padding:10px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
 </style>
 </head>
 <body>
+
 <div class="wrap">
-<header class="top"><div class="brand">⚔️ ZYVO<span>BATTLE</span></div><button id="loginBtn">Sign in with Google</button></header>
-<section class="hero"><div class="eyebrow">Free Fire MAX • Community tournaments</div><h1>Play smart.<br><span style="color:var(--red)">Rise to the top.</span></h1><p class="muted">Browse demo tournaments, register your interest and track sample leaderboard scores.</p></section>
-<div class="notice"><b>Demo / safety notice:</b> This is an early version. No entry fees, deposits, withdrawals or real prizes are processed. Do not submit payment details.</div>
-<section class="card">
-<div class="section-title" style="margin-top:0"><h2 style="margin:0;font-size:19px">Player profile</h2><span id="authStatus" class="pill">Signed out</span></div>
-<div id="profileText" class="muted">Sign in with Google to view your profile and register interest.</div>
-<button id="logoutBtn" class="secondary hidden" style="margin-top:12px">Sign out</button>
-</section>
-<div class="section-title"><h2 style="margin:0">Tournaments</h2><span class="muted" id="tournamentCount">Loading…</span></div>
-<div id="tournaments" class="grid"><div class="card">Loading tournaments…</div></div>
-<section class="card" style="margin-top:24px">
-<div class="section-title" style="margin-top:0"><h2 style="margin:0;font-size:19px">Leaderboard</h2><span class="muted">Demo scores</span></div>
-<div id="leaderboard" class="muted">Loading leaderboard…</div>
-</section>
-<div class="footer">© 2026 ZyvoBattle • Early demo. Google sign-in and database access require correct Firebase setup and Firestore security rules.</div>
+  <header class="top">
+    <div class="brand">⚔️ ZYVO<span>BATTLE</span></div>
+    <div id="walletTop" class="wallet-badge hidden" onclick="showTab('walletTab')">🪙 ₹<span id="topBal">0</span></div>
+  </header>
+
+  <!-- LOGIN / REGISTER SCREEN -->
+  <div id="authBox" class="card">
+    <h2 style="margin-top:0">🔥 Player Login / Register</h2>
+    <p style="color:var(--muted);font-size:13px">Apna Free Fire UID aur Password daal kar account banayein ya login karein.</p>
+    <input id="ffName" placeholder="Free Fire In-Game Name (Jaise: RAISTAR)">
+    <input id="ffUid" type="number" placeholder="Free Fire UID (Jaise: 283948576)">
+    <input id="ffPass" type="password" placeholder="Create / Enter Password">
+    <button id="authBtn">Login / Register</button>
+  </div>
+
+  <!-- MAIN APP TABS -->
+  <div id="mainApp" class="hidden">
+    
+    <!-- TAB 1: MATCHES -->
+    <div id="matchesTab">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <h3 style="margin:0">🏆 Live & Upcoming Matches</h3>
+        <small id="tournamentCount" style="color:var(--muted)">Loading...</small>
+      </div>
+      <div id="tournaments"></div>
+    </div>
+
+    <!-- TAB 2: WALLET -->
+    <div id="walletTab" class="hidden">
+      <div class="card" style="text-align:center">
+        <small style="color:var(--muted)">Available Balance</small>
+        <h1 style="margin:6px 0;color:#ffd700">₹<span id="walletBal">0</span></h1>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0">➕ Add Money (Deposit)</h3>
+        <p style="font-size:13px;color:var(--muted)">UPI ID: <b id="adminUpiText" style="color:#fff">zyvobattle@upi</b> par payment karein aur niche Amount aur 12-digit UTR number dalein.</p>
+        <input id="depAmount" type="number" placeholder="Amount (₹)">
+        <input id="depUtr" placeholder="12-Digit UPI UTR / Ref No.">
+        <button id="depBtn" class="green">Submit Deposit Request</button>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0">🏦 Withdraw Winnings</h3>
+        <input id="withAmount" type="number" placeholder="Withdraw Amount (₹)">
+        <input id="withUpi" placeholder="Apni UPI ID dalein (Jaise: 9876543210@ybl)">
+        <button id="withBtn">Request Withdrawal</button>
+      </div>
+    </div>
+
+    <!-- TAB 3: LEADERBOARD -->
+    <div id="rankTab" class="hidden">
+      <div class="card">
+        <h3 style="margin-top:0">📊 Top Players Leaderboard</h3>
+        <div id="leaderboard">Loading...</div>
+      </div>
+    </div>
+
+    <!-- TAB 4: PROFILE -->
+    <div id="profileTab" class="hidden">
+      <div class="card">
+        <h3 style="margin-top:0">👤 Player Profile</h3>
+        <p><b>In-Game Name:</b> <span id="pName"></span></p>
+        <p><b>Free Fire UID:</b> <span id="pUid"></span></p>
+        <button id="logoutBtn" class="secondary" style="margin-top:10px">Logout</button>
+      </div>
+    </div>
+
+  </div>
 </div>
+
+<!-- BOTTOM NAVIGATION -->
+<nav id="bottomNav" class="nav hidden">
+  <button id="navMatches" class="active" onclick="showTab('matchesTab', this)">🎮 Matches</button>
+  <button id="navWallet" onclick="showTab('walletTab', this)">💰 Wallet</button>
+  <button id="navRank" onclick="showTab('rankTab', this)">🏆 Rank</button>
+  <button id="navProfile" onclick="showTab('profileTab', this)">👤 Profile</button>
+</nav>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, getDocs, addDoc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, doc, getDoc, setDoc, updateDoc, addDoc, onSnapshot, arrayUnion, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDJpr9gktLVZgPOF2K89mOlubJrddw9OT0",
@@ -47,67 +126,187 @@ const firebaseConfig = {
   appId: "1:335264733948:web:30217c54d3e15c8b1bd579",
   measurementId: "G-DKB22GRV6R"
 };
+
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
 const $ = id => document.getElementById(id);
-let currentUser = null;
-const money = n => "₹" + (Number(n)||0);
 const safe = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-$("loginBtn").addEventListener("click", async()=>{
- try { await signInWithPopup(auth,provider); }
- catch(e){ alert("Google sign-in failed: "+e.message+"\nFirebase Authentication mein Google provider enabled hai aur Authorized domains mein GitHub Pages domain add hai, check karein."); }
+let currentUser = null;
+
+window.showTab = (tabId, btn) => {
+  ["matchesTab","walletTab","rankTab","profileTab"].forEach(id => $(id).classList.add("hidden"));
+  $(tabId).classList.remove("hidden");
+  if(btn){
+    document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+  }
+};
+
+// Login / Register Logic
+$("authBtn").addEventListener("click", async () => {
+  const name = $("ffName").value.trim();
+  const uid = $("ffUid").value.trim();
+  const pass = $("ffPass").value.trim();
+  if(!uid || !pass) return alert("Free Fire UID aur Password dalna zaroori hai!");
+
+  try {
+    $("authBtn").disabled = true;
+    const userRef = doc(db, "users", uid);
+    const snap = await getDoc(userRef);
+
+    if(snap.exists()){
+      const data = snap.data();
+      if(data.password !== pass){
+        $("authBtn").disabled = false;
+        return alert("Galat Password! Sahi password dalein.");
+      }
+      localStorage.setItem("zyvoUid", uid);
+      startSession(uid);
+    } else {
+      if(!name){
+        $("authBtn").disabled = false;
+        return alert("Naya account banane ke liye Free Fire Name bhi dalein!");
+      }
+      await setDoc(userRef, { name, uid, password: pass, wallet: 0, createdAt: new Date().toISOString() });
+      localStorage.setItem("zyvoUid", uid);
+      startSession(uid);
+    }
+  } catch(e) {
+    alert("Database Error: Firebase Firestore Rules check karein!\n" + e.message);
+  }
+  $("authBtn").disabled = false;
 });
-$("logoutBtn").addEventListener("click", async()=>{try{await signOut(auth)}catch(e){alert(e.message)}});
-onAuthStateChanged(auth,user=>{
- currentUser=user;
- $("authStatus").textContent=user?"Signed in":"Signed out";
- $("loginBtn").classList.toggle("hidden",!!user);
- $("logoutBtn").classList.toggle("hidden",!user);
- $("profileText").innerHTML=user
- ? `<b>${safe(user.displayName||"Player")}</b><br><span class="muted">${safe(user.email||"")}</span><br><small class="muted">Profile is read from Google sign-in. Do not share your private account details.</small>`
- : "Sign in with Google to view your profile and register interest.";
-});
-async function loadTournaments(){
- const root=$("tournaments");
- try{
-  const snap=await getDocs(collection(db,"tournaments"));
-  const list=snap.docs.map(d=>({id:d.id,...d.data()}));
-  $("tournamentCount").textContent=list.length+" found";
-  if(!list.length){root.innerHTML='<div class="card">No tournaments yet. Admin can add tournament documents to the <code>tournaments</code> collection.</div>';return;}
-  root.innerHTML=list.map(t=>`<article class="card"><span class="tag">${safe(t.mode||"Tournament")}</span><h3>${safe(t.name||"Untitled tournament")}</h3><div class="stats"><div class="stat"><small>Entry fee</small><b>${money(t.entryFee)}</b></div><div class="stat"><small>Prize</small><b>${money(t.prize)}</b></div><div class="stat"><small>Per kill</small><b>${money(t.perKill)}</b></div></div><p class="muted">${safe(t.status||"upcoming")}</p><button data-register="${safe(t.id)}">Register interest</button></article>`).join("");
-  root.querySelectorAll("[data-register]").forEach(btn=>btn.addEventListener("click",()=>register(btn.dataset.register)));
- }catch(e){
-  $("tournamentCount").textContent="Unavailable";
-  root.innerHTML='<div class="card">Could not load tournaments. Check internet connection and Firestore rules.</div>';
-  console.error(e);
- }
-}
-async function register(tournamentId){
- if(!currentUser){alert("Please sign in with Google first.");return;}
- if(!confirm("Register your interest for this demo tournament? No payment will be taken."))return;
- try{
-  await addDoc(collection(db,"registrations"),{
-   tournamentId,
-   uid:currentUser.uid,
-   playerName:currentUser.displayName||"Player",
-   email:currentUser.email||"",
-   createdAt:new Date().toISOString(),
-   status:"interest-only"
+
+function startSession(uid){
+  $("authBox").classList.add("hidden");
+  $("mainApp").classList.remove("hidden");
+  $("bottomNav").classList.remove("hidden");
+  $("walletTop").classList.remove("hidden");
+
+  onSnapshot(doc(db, "users", uid), snap => {
+    if(!snap.exists()) return;
+    currentUser = snap.data();
+    $("topBal").textContent = currentUser.wallet || 0;
+    $("walletBal").textContent = currentUser.wallet || 0;
+    $("pName").textContent = currentUser.name;
+    $("pUid").textContent = currentUser.uid;
+    loadTournaments();
   });
-  alert("Interest registered successfully. This is not a confirmed tournament entry.");
- }catch(e){alert("Registration could not be saved. Check Firestore rules: "+e.message);}
+
+  onSnapshot(doc(db, "settings", "config"), snap => {
+    if(snap.exists() && snap.data().upiId){
+      $("adminUpiText").textContent = snap.data().upiId;
+    }
+  });
 }
-async function loadLeaderboard(){
- try{
-  const snap=await getDocs(query(collection(db,"leaderboard"),orderBy("points","desc"),limit(20)));
-  const rows=snap.docs.map(d=>d.data());
-  $("leaderboard").innerHTML=rows.length?rows.map((r,i)=>`<div class="listrow"><span><b>#${i+1}</b> &nbsp; ${safe(r.playerName||"Player")}</span><b>${Number(r.points)||0} pts</b></div>`).join(""):"No scores yet. Add demo score documents to the leaderboard collection.";
- }catch(e){$("leaderboard").textContent="Leaderboard unavailable. Check Firestore rules or create the leaderboard collection.";console.error(e);}
+
+$("logoutBtn").addEventListener("click", () => {
+  localStorage.removeItem("zyvoUid");
+  location.reload();
+});
+
+// Load Live Tournaments
+function loadTournaments(){
+  onSnapshot(collection(db, "tournaments"), snap => {
+    const list = snap.docs.map(d => ({id: d.id, ...d.data()}));
+    $("tournamentCount").textContent = list.length + " Matches";
+    const root = $("tournaments");
+    if(!list.length){
+      root.innerHTML = `<div class="card">Abhi koi match nahi hai. Admin jald hi naya match add karega!</div>`;
+      return;
+    }
+    root.innerHTML = list.map(t => {
+      const joinedList = t.joinedPlayers || [];
+      const isJoined = currentUser && joinedList.some(p => p.uid === currentUser.uid);
+      return `
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span class="tag">${safe(t.mode || "Solo")}</span>
+          <small style="color:var(--muted)">📅 ${safe(t.date || "Upcoming")}</small>
+        </div>
+        <h3 style="margin:10px 0 6px">${safe(t.name)}</h3>
+        <div class="stats">
+          <div class="stat"><small>Entry Fee</small><b>₹${Number(t.entryFee)||0}</b></div>
+          <div class="stat"><small>Win Prize</small><b>₹${Number(t.prize)||0}</b></div>
+          <div class="stat"><small>Per Kill</small><b>₹${Number(t.perKill)||0}</b></div>
+        </div>
+        <small style="color:var(--muted);display:block;margin-bottom:8px">👥 Joined Players: ${joinedList.length}</small>
+        ${isJoined ? `
+          <div class="room-box">
+            ${t.roomId ? `<b>🔑 Room ID:</b> ${safe(t.roomId)} <br> <b>🔒 Password:</b> ${safe(t.roomPass || "Wait")}` : `✅ Aap Join ho chuke hain! Room ID aur Password match se 15 min pehle yahan dikhega.`}
+          </div>
+          <button class="green" disabled>✔ Joined</button>
+        ` : `
+          <button data-join="${t.id}" data-fee="${Number(t.entryFee)||0}">Join Match (₹${Number(t.entryFee)||0})</button>
+        `}
+      </div>`;
+    }).join("");
+
+    root.querySelectorAll("[data-join]").forEach(btn => {
+      btn.addEventListener("click", () => joinMatch(btn.dataset.join, Number(btn.dataset.fee)));
+    });
+  });
 }
-loadTournaments();loadLeaderboard();
+
+async function joinMatch(tId, fee){
+  if(!currentUser) return;
+  if((currentUser.wallet || 0) < fee){
+    alert("Wallet mein balance kam hai! Pehle Wallet tab mein jaakar ₹" + fee + " add karein.");
+    showTab("walletTab");
+    return;
+  }
+  if(!confirm(`Kya aap ₹${fee} dekar is match mein join hona chahte hain?`)) return;
+
+  try {
+    const newBal = (currentUser.wallet || 0) - fee;
+    await updateDoc(doc(db, "users", currentUser.uid), { wallet: newBal });
+    await updateDoc(doc(db, "tournaments", tId), {
+      joinedPlayers: arrayUnion({ uid: currentUser.uid, name: currentUser.name })
+    });
+    alert("🎉 Badhai ho! Aap match mein successfully join ho gaye hain.");
+  } catch(e) {
+    alert("Join karne mein problem aayi: " + e.message);
+  }
+}
+
+// Deposit & Withdraw Requests
+$("depBtn").addEventListener("click", async () => {
+  const amount = Number($("depAmount").value);
+  const utr = $("depUtr").value.trim();
+  if(amount <= 0 || !utr) return alert("Sahi Amount aur 12-digit UTR number dalein!");
+  await addDoc(collection(db, "walletRequests"), {
+    uid: currentUser.uid, name: currentUser.name, type: "deposit", amount, detail: utr, status: "pending", createdAt: new Date().toISOString()
+  });
+  $("depAmount").value = ""; $("depUtr").value = "";
+  alert("✅ Deposit request bhej di gayi hai! Admin verify karke wallet mein paise add kar dega.");
+});
+
+$("withBtn").addEventListener("click", async () => {
+  const amount = Number($("withAmount").value);
+  const upi = $("withUpi").value.trim();
+  if(amount <= 0 || !upi) return alert("Amount aur UPI ID dalein!");
+  if((currentUser.wallet || 0) < amount) return alert("Wallet mein itna balance nahi hai!");
+
+  await updateDoc(doc(db, "users", currentUser.uid), { wallet: currentUser.wallet - amount });
+  await addDoc(collection(db, "walletRequests"), {
+    uid: currentUser.uid, name: currentUser.name, type: "withdraw", amount, detail: upi, status: "pending", createdAt: new Date().toISOString()
+  });
+  $("withAmount").value = ""; $("withUpi").value = "";
+  alert("✅ Withdrawal request lag gayi hai! Jald aapke UPI par paise bhej diye jayenge.");
+});
+
+// Leaderboard
+onSnapshot(query(collection(db, "leaderboard"), orderBy("points", "desc")), snap => {
+  const rows = snap.docs.map(d => d.data());
+  $("leaderboard").innerHTML = rows.length ? rows.map((r, i) => `
+    <div class="listrow"><span><b>#${i+1}</b> &nbsp; ${safe(r.playerName)}</span><b style="color:#ffd700">${Number(r.points)||0} Kills/Pts</b></div>
+  `).join("") : "Abhi koi score update nahi hua hai.";
+});
+
+// Auto login if saved
+const savedUid = localStorage.getItem("zyvoUid");
+if(savedUid) startSession(savedUid);
 </script>
 </body>
 </html>
