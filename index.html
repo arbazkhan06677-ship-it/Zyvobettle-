@@ -2,120 +2,48 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>ZyvoBattle — Free Fire MAX Tournaments</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZyvoBattle — Tournaments</title>
 <style>
 :root{--bg:#0b0b0f;--panel:#17171d;--panel2:#202027;--red:#ff3038;--green:#00c853;--text:#f5f5f7;--muted:#aaaab5;--line:#34343e}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,sans-serif;padding-bottom:75px}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 sans-serif;padding-bottom:70px}
 .wrap{max-width:600px;margin:auto;padding:14px}
-.top{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)}
-.brand{font-size:21px;font-weight:900}.brand span{color:var(--red)}
-.wallet-badge{background:var(--panel2);border:1px solid var(--line);padding:6px 12px;border-radius:20px;font-weight:800;color:#ffd700;cursor:pointer}
-button{border:0;border-radius:9px;background:var(--red);color:white;font-weight:800;padding:11px 14px;cursor:pointer;width:100%;font-size:14px}
-button.secondary{background:#303039}
+.top{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.brand{font-size:20px;font-weight:900}.brand span{color:var(--red)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:12px}
+input{width:100%;padding:12px;background:#101015;color:#fff;border:1px solid #454550;border-radius:8px;margin:6px 0 12px}
+button{border:0;border-radius:8px;background:var(--red);color:#fff;font-weight:bold;padding:12px;width:100%;cursor:pointer}
 button.green{background:var(--green)}
-button:disabled{opacity:.5;cursor:not-allowed}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px;margin-top:14px}
-.tag{display:inline-block;background:#392023;color:#ff9ca1;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:800}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
-.stat{background:var(--panel2);padding:8px;border-radius:8px;text-align:center}
-.stat small{display:block;color:var(--muted);font-size:11px}
-.stat b{font-size:15px;color:#fff}
-input,select{width:100%;padding:12px;background:#101015;color:white;border:1px solid #454550;border-radius:9px;margin:6px 0 12px;font-size:14px}
-.room-box{background:#122b1d;border:1px dashed var(--green);padding:10px;border-radius:8px;margin:10px 0;text-align:center}
 .hidden{display:none}
-.nav{position:fixed;bottom:0;left:0;right:0;background:#121218;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 0;z-index:99}
-.nav button{background:none;color:var(--muted);padding:6px;font-size:12px;width:auto}
-.nav button.active{color:var(--red)}
-.listrow{padding:10px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
 </style>
 </head>
 <body>
-
 <div class="wrap">
-  <header class="top">
+  <div class="top">
     <div class="brand">⚔️ ZYVO<span>BATTLE</span></div>
-    <div id="walletTop" class="wallet-badge hidden" onclick="showTab('walletTab')">🪙 ₹<span id="topBal">0</span></div>
-  </header>
+    <div id="topBal" class="hidden" style="color:#ffd700;font-weight:bold">🪙 ₹<span id="bal">0</span></div>
+  </div>
 
-  <!-- LOGIN / REGISTER SCREEN -->
+  <!-- LOGIN BOX -->
   <div id="authBox" class="card">
-    <h2 style="margin-top:0">🔥 Player Login / Register</h2>
-    <p style="color:var(--muted);font-size:13px">Apna Free Fire UID aur Password daal kar account banayein ya login karein.</p>
-    <input id="ffName" placeholder="Free Fire In-Game Name (Jaise: RAISTAR)">
-    <input id="ffUid" type="number" placeholder="Free Fire UID (Jaise: 283948576)">
-    <input id="ffPass" type="password" placeholder="Create / Enter Password">
+    <h3>🔥 Player Login / Register</h3>
+    <input id="name" placeholder="Free Fire Name (Jaise: CR7)">
+    <input id="uid" placeholder="Free Fire UID (Jaise: 530335383)">
+    <input id="pass" type="password" placeholder="Password">
     <button id="authBtn">Login / Register</button>
   </div>
 
-  <!-- MAIN APP TABS -->
-  <div id="mainApp" class="hidden">
-    
-    <!-- TAB 1: MATCHES -->
-    <div id="matchesTab">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-        <h3 style="margin:0">🏆 Live & Upcoming Matches</h3>
-        <small id="tournamentCount" style="color:var(--muted)">Loading...</small>
-      </div>
-      <div id="tournaments"></div>
-    </div>
-
-    <!-- TAB 2: WALLET -->
-    <div id="walletTab" class="hidden">
-      <div class="card" style="text-align:center">
-        <small style="color:var(--muted)">Available Balance</small>
-        <h1 style="margin:6px 0;color:#ffd700">₹<span id="walletBal">0</span></h1>
-      </div>
-
-      <div class="card">
-        <h3 style="margin-top:0">➕ Add Money (Deposit)</h3>
-        <p style="font-size:13px;color:var(--muted)">UPI ID: <b id="adminUpiText" style="color:#fff">zyvobattle@upi</b> par payment karein aur niche Amount aur 12-digit UTR number dalein.</p>
-        <input id="depAmount" type="number" placeholder="Amount (₹)">
-        <input id="depUtr" placeholder="12-Digit UPI UTR / Ref No.">
-        <button id="depBtn" class="green">Submit Deposit Request</button>
-      </div>
-
-      <div class="card">
-        <h3 style="margin-top:0">🏦 Withdraw Winnings</h3>
-        <input id="withAmount" type="number" placeholder="Withdraw Amount (₹)">
-        <input id="withUpi" placeholder="Apni UPI ID dalein (Jaise: 9876543210@ybl)">
-        <button id="withBtn">Request Withdrawal</button>
-      </div>
-    </div>
-
-    <!-- TAB 3: LEADERBOARD -->
-    <div id="rankTab" class="hidden">
-      <div class="card">
-        <h3 style="margin-top:0">📊 Top Players Leaderboard</h3>
-        <div id="leaderboard">Loading...</div>
-      </div>
-    </div>
-
-    <!-- TAB 4: PROFILE -->
-    <div id="profileTab" class="hidden">
-      <div class="card">
-        <h3 style="margin-top:0">👤 Player Profile</h3>
-        <p><b>In-Game Name:</b> <span id="pName"></span></p>
-        <p><b>Free Fire UID:</b> <span id="pUid"></span></p>
-        <button id="logoutBtn" class="secondary" style="margin-top:10px">Logout</button>
-      </div>
-    </div>
-
+  <!-- DASHBOARD -->
+  <div id="appBox" class="hidden">
+    <h3>🏆 Live Tournaments</h3>
+    <div id="matchesList"><p style="color:var(--muted)">Loading matches...</p></div>
+    <button id="logoutBtn" style="background:#333;margin-top:20px">Logout</button>
   </div>
 </div>
 
-<!-- BOTTOM NAVIGATION -->
-<nav id="bottomNav" class="nav hidden">
-  <button id="navMatches" class="active" onclick="showTab('matchesTab', this)">🎮 Matches</button>
-  <button id="navWallet" onclick="showTab('walletTab', this)">💰 Wallet</button>
-  <button id="navRank" onclick="showTab('rankTab', this)">🏆 Rank</button>
-  <button id="navProfile" onclick="showTab('profileTab', this)">👤 Profile</button>
-</nav>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, doc, getDoc, setDoc, updateDoc, addDoc, onSnapshot, arrayUnion, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDJpr9gktLVZgPOF2K89mOlubJrddw9OT0",
@@ -123,190 +51,67 @@ const firebaseConfig = {
   projectId: "zyvobettle",
   storageBucket: "zyvobettle.firebasestorage.app",
   messagingSenderId: "335264733948",
-  appId: "1:335264733948:web:30217c54d3e15c8b1bd579",
-  measurementId: "G-DKB22GRV6R"
+  appId: "1:335264733948:web:30217c54d3e15c8b1bd579"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const $ = id => document.getElementById(id);
-const safe = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-let currentUser = null;
-
-window.showTab = (tabId, btn) => {
-  ["matchesTab","walletTab","rankTab","profileTab"].forEach(id => $(id).classList.add("hidden"));
-  $(tabId).classList.remove("hidden");
-  if(btn){
-    document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-  }
-};
-
-// Login / Register Logic
 $("authBtn").addEventListener("click", async () => {
-  const name = $("ffName").value.trim();
-  const uid = $("ffUid").value.trim();
-  const pass = $("ffPass").value.trim();
-  if(!uid || !pass) return alert("Free Fire UID aur Password dalna zaroori hai!");
+  const n = $("name").value.trim();
+  const u = $("uid").value.trim();
+  const p = $("pass").value.trim();
+
+  if(!n || !u || !p) return alert("Sabhi fields bharna zaroori hai!");
 
   try {
-    $("authBtn").disabled = true;
-    const userRef = doc(db, "users", uid);
-    const snap = await getDoc(userRef);
-
+    const ref = doc(db, "users", u);
+    const snap = await getDoc(ref);
     if(snap.exists()){
-      const data = snap.data();
-      if(data.password !== pass){
-        $("authBtn").disabled = false;
-        return alert("Galat Password! Sahi password dalein.");
-      }
-      localStorage.setItem("zyvoUid", uid);
-      startSession(uid);
+      if(snap.data().password !== p) return alert("Galat Password!");
+      localStorage.setItem("userUid", u);
+      startApp(u);
     } else {
-      if(!name){
-        $("authBtn").disabled = false;
-        return alert("Naya account banane ke liye Free Fire Name bhi dalein!");
-      }
-      await setDoc(userRef, { name, uid, password: pass, wallet: 0, createdAt: new Date().toISOString() });
-      localStorage.setItem("zyvoUid", uid);
-      startSession(uid);
+      await setDoc(ref, { name: n, uid: u, password: p, wallet: 0 });
+      localStorage.setItem("userUid", u);
+      startApp(u);
     }
   } catch(e) {
-    alert("Database Error: Firebase Firestore Rules check karein!\n" + e.message);
+    alert("Database Error: " + e.message);
   }
-  $("authBtn").disabled = false;
 });
 
-function startSession(uid){
+function startApp(u){
   $("authBox").classList.add("hidden");
-  $("mainApp").classList.remove("hidden");
-  $("bottomNav").classList.remove("hidden");
-  $("walletTop").classList.remove("hidden");
+  $("appBox").classList.remove("hidden");
+  $("topBal").classList.remove("hidden");
 
-  onSnapshot(doc(db, "users", uid), snap => {
-    if(!snap.exists()) return;
-    currentUser = snap.data();
-    $("topBal").textContent = currentUser.wallet || 0;
-    $("walletBal").textContent = currentUser.wallet || 0;
-    $("pName").textContent = currentUser.name;
-    $("pUid").textContent = currentUser.uid;
-    loadTournaments();
+  onSnapshot(doc(db, "users", u), docSnap => {
+    if(docSnap.exists()){
+      $("bal").textContent = docSnap.data().wallet || 0;
+    }
   });
 
-  onSnapshot(doc(db, "settings", "config"), snap => {
-    if(snap.exists() && snap.data().upiId){
-      $("adminUpiText").textContent = snap.data().upiId;
-    }
+  onSnapshot(collection(db, "tournaments"), snap => {
+    const list = snap.docs.map(d => ({id: d.id, ...d.data()}));
+    $("matchesList").innerHTML = list.length ? list.map(t => `
+      <div class="card">
+        <h4>${t.name || "Match"}</h4>
+        <p>Entry: ₹${t.entryFee || 0} | Prize: ₹${t.prize || 0}</p>
+        <p style="color:var(--green)">Room ID/Pass: ${t.roomId || "Match shuru hone par milega"}</p>
+      </div>
+    `).join("") : "<p style='color:var(--muted)'>Abhi koi match uplabdh nahi hai.</p>";
   });
 }
 
 $("logoutBtn").addEventListener("click", () => {
-  localStorage.removeItem("zyvoUid");
+  localStorage.removeItem("userUid");
   location.reload();
 });
 
-// Load Live Tournaments
-function loadTournaments(){
-  onSnapshot(collection(db, "tournaments"), snap => {
-    const list = snap.docs.map(d => ({id: d.id, ...d.data()}));
-    $("tournamentCount").textContent = list.length + " Matches";
-    const root = $("tournaments");
-    if(!list.length){
-      root.innerHTML = `<div class="card">Abhi koi match nahi hai. Admin jald hi naya match add karega!</div>`;
-      return;
-    }
-    root.innerHTML = list.map(t => {
-      const joinedList = t.joinedPlayers || [];
-      const isJoined = currentUser && joinedList.some(p => p.uid === currentUser.uid);
-      return `
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <span class="tag">${safe(t.mode || "Solo")}</span>
-          <small style="color:var(--muted)">📅 ${safe(t.date || "Upcoming")}</small>
-        </div>
-        <h3 style="margin:10px 0 6px">${safe(t.name)}</h3>
-        <div class="stats">
-          <div class="stat"><small>Entry Fee</small><b>₹${Number(t.entryFee)||0}</b></div>
-          <div class="stat"><small>Win Prize</small><b>₹${Number(t.prize)||0}</b></div>
-          <div class="stat"><small>Per Kill</small><b>₹${Number(t.perKill)||0}</b></div>
-        </div>
-        <small style="color:var(--muted);display:block;margin-bottom:8px">👥 Joined Players: ${joinedList.length}</small>
-        ${isJoined ? `
-          <div class="room-box">
-            ${t.roomId ? `<b>🔑 Room ID:</b> ${safe(t.roomId)} <br> <b>🔒 Password:</b> ${safe(t.roomPass || "Wait")}` : `✅ Aap Join ho chuke hain! Room ID aur Password match se 15 min pehle yahan dikhega.`}
-          </div>
-          <button class="green" disabled>✔ Joined</button>
-        ` : `
-          <button data-join="${t.id}" data-fee="${Number(t.entryFee)||0}">Join Match (₹${Number(t.entryFee)||0})</button>
-        `}
-      </div>`;
-    }).join("");
-
-    root.querySelectorAll("[data-join]").forEach(btn => {
-      btn.addEventListener("click", () => joinMatch(btn.dataset.join, Number(btn.dataset.fee)));
-    });
-  });
-}
-
-async function joinMatch(tId, fee){
-  if(!currentUser) return;
-  if((currentUser.wallet || 0) < fee){
-    alert("Wallet mein balance kam hai! Pehle Wallet tab mein jaakar ₹" + fee + " add karein.");
-    showTab("walletTab");
-    return;
-  }
-  if(!confirm(`Kya aap ₹${fee} dekar is match mein join hona chahte hain?`)) return;
-
-  try {
-    const newBal = (currentUser.wallet || 0) - fee;
-    await updateDoc(doc(db, "users", currentUser.uid), { wallet: newBal });
-    await updateDoc(doc(db, "tournaments", tId), {
-      joinedPlayers: arrayUnion({ uid: currentUser.uid, name: currentUser.name })
-    });
-    alert("🎉 Badhai ho! Aap match mein successfully join ho gaye hain.");
-  } catch(e) {
-    alert("Join karne mein problem aayi: " + e.message);
-  }
-}
-
-// Deposit & Withdraw Requests
-$("depBtn").addEventListener("click", async () => {
-  const amount = Number($("depAmount").value);
-  const utr = $("depUtr").value.trim();
-  if(amount <= 0 || !utr) return alert("Sahi Amount aur 12-digit UTR number dalein!");
-  await addDoc(collection(db, "walletRequests"), {
-    uid: currentUser.uid, name: currentUser.name, type: "deposit", amount, detail: utr, status: "pending", createdAt: new Date().toISOString()
-  });
-  $("depAmount").value = ""; $("depUtr").value = "";
-  alert("✅ Deposit request bhej di gayi hai! Admin verify karke wallet mein paise add kar dega.");
-});
-
-$("withBtn").addEventListener("click", async () => {
-  const amount = Number($("withAmount").value);
-  const upi = $("withUpi").value.trim();
-  if(amount <= 0 || !upi) return alert("Amount aur UPI ID dalein!");
-  if((currentUser.wallet || 0) < amount) return alert("Wallet mein itna balance nahi hai!");
-
-  await updateDoc(doc(db, "users", currentUser.uid), { wallet: currentUser.wallet - amount });
-  await addDoc(collection(db, "walletRequests"), {
-    uid: currentUser.uid, name: currentUser.name, type: "withdraw", amount, detail: upi, status: "pending", createdAt: new Date().toISOString()
-  });
-  $("withAmount").value = ""; $("withUpi").value = "";
-  alert("✅ Withdrawal request lag gayi hai! Jald aapke UPI par paise bhej diye jayenge.");
-});
-
-// Leaderboard
-onSnapshot(query(collection(db, "leaderboard"), orderBy("points", "desc")), snap => {
-  const rows = snap.docs.map(d => d.data());
-  $("leaderboard").innerHTML = rows.length ? rows.map((r, i) => `
-    <div class="listrow"><span><b>#${i+1}</b> &nbsp; ${safe(r.playerName)}</span><b style="color:#ffd700">${Number(r.points)||0} Kills/Pts</b></div>
-  `).join("") : "Abhi koi score update nahi hua hai.";
-});
-
-// Auto login if saved
-const savedUid = localStorage.getItem("zyvoUid");
-if(savedUid) startSession(savedUid);
+const saved = localStorage.getItem("userUid");
+if(saved) startApp(saved);
 </script>
 </body>
 </html>
