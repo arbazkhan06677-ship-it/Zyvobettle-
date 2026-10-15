@@ -1,38 +1,52 @@
 name: Build ZyvoBattle APK
 
 on:
-  workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
-  build:
+  build-apk:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout project
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
+          distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Build Debug APK
+      - name: Generate Android Project & Build APK
         run: |
+          mkdir -p apk_builder/www
+          cp index.html apk_builder/www/index.html
+          cd apk_builder
+          npm init -y
+          npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
+          cat << 'EOF' > capacitor.config.json
+          {
+            "appId": "com.zyvobattle.app",
+            "appName": "ZyvoBattle",
+            "webDir": "www",
+            "bundledWebRuntime": false
+          }
+          EOF
+          npx cap add android
+          npx cap sync android
+          cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: Upload APK
+      - name: Upload Ready APK
         uses: actions/upload-artifact@v4
         with:
           name: ZyvoBattle-APK
-          path: app/build/outputs/apk/debug/*.apk
-run: |
-  chmod +x gradlew
-  ./gradlew assembleDebug
+          path: apk_builder/android/app/build/outputs/apk/debug/app-debug.apk
