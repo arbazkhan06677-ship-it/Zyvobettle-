@@ -79,7 +79,7 @@ small{color:#aaa}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeFirestore, collection, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const pin = prompt("Enter Admin PIN (Default: 1234):");
 if(pin !== "1234"){
@@ -98,7 +98,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const db = initializeFirestore(app, { experimentalForceLongPolling: true });
 const $ = id => document.getElementById(id);
 
 window.saveUpi = async () => {
@@ -124,7 +124,6 @@ window.createMatch = async () => {
   alert("🔥 Match Live publish ho gaya!");
 };
 
-// Load Matches in Admin
 onSnapshot(collection(db, "tournaments"), snap => {
   const list = snap.docs.map(d => ({id: d.id, ...d.data()}));
   $("matchList").innerHTML = list.length ? list.map(t => {
@@ -152,7 +151,6 @@ window.delMatch = async (id) => {
   if(confirm("Delete this match?")) await deleteDoc(doc(db, "tournaments", id));
 };
 
-// Load Wallet Requests
 onSnapshot(collection(db, "walletRequests"), snap => {
   const reqs = snap.docs.map(d => ({id: d.id, ...d.data()})).filter(r => r.status === "pending");
   $("walletList").innerHTML = reqs.length ? reqs.map(r => `
