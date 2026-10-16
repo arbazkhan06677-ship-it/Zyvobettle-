@@ -1,208 +1,53 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0b0b0f">
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ZyvoBattle — Tournaments</title>
-
 <style>
-:root {
-  --bg: #0b0b0f;
-  --panel: #17171d;
-  --red: #ff3038;
-  --green: #00c853;
-  --text: #f5f5f7;
-  --muted: #aaaab5;
-  --line: #34343e;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font: 15px/1.5 Arial, sans-serif;
-  padding-bottom: 40px;
-}
-
-.wrap {
-  max-width: 600px;
-  margin: auto;
-  padding: 14px;
-}
-
-.top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--line);
-}
-
-.brand {
-  font-size: 20px;
-  font-weight: 900;
-}
-
-.brand span {
-  color: var(--red);
-}
-
-.card {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 14px;
-  margin-top: 12px;
-}
-
-input {
-  display: block;
-  width: 100%;
-  padding: 12px;
-  background: #101015;
-  color: white;
-  border: 1px solid #454550;
-  border-radius: 8px;
-  margin: 8px 0 14px;
-  font-size: 15px;
-}
-
-button {
-  border: 0;
-  border-radius: 8px;
-  background: var(--red);
-  color: white;
-  font-weight: bold;
-  padding: 12px;
-  width: 100%;
-  cursor: pointer;
-}
-
-button:disabled {
-  opacity: 0.6;
-  cursor: wait;
-}
-
-.hidden {
-  display: none !important;
-}
-
-.muted {
-  color: var(--muted);
-}
-
-.green-text {
-  color: var(--green);
-  overflow-wrap: anywhere;
-}
-
-.status {
-  padding: 10px;
-  border-radius: 8px;
-  background: #202027;
-  margin-top: 12px;
-  overflow-wrap: anywhere;
-}
-
-.match-title {
-  margin-top: 0;
-}
-
-.small {
-  font-size: 13px;
-  color: var(--muted);
-}
+:root{--bg:#0b0b0f;--panel:#17171d;--panel2:#202027;--red:#ff3038;--green:#00c853;--text:#f5f5f7;--muted:#aaaab5;--line:#34343e}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 sans-serif;padding-bottom:70px}
+.wrap{max-width:600px;margin:auto;padding:14px}
+.top{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.brand{font-size:20px;font-weight:900}.brand span{color:var(--red)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:12px}
+input{width:100%;padding:12px;background:#101015;color:#fff;border:1px solid #454550;border-radius:8px;margin:6px 0 12px}
+button{border:0;border-radius:8px;background:var(--red);color:#fff;font-weight:bold;padding:12px;width:100%;cursor:pointer}
+button.green{background:var(--green)}
+.alert{background:#2a1215;border:1px solid var(--red);color:#ff8085;padding:10px;border-radius:8px;margin-bottom:12px;font-size:14px}
+.hidden{display:none}
 </style>
 </head>
-
 <body>
 <div class="wrap">
-
   <div class="top">
     <div class="brand">⚔️ ZYVO<span>BATTLE</span></div>
-
-    <div id="topBal" class="hidden"
-         style="color:#ffd700;font-weight:bold">
-      🪙 ₹<span id="bal">0</span>
-    </div>
+    <div id="topBal" class="hidden" style="color:#ffd700;font-weight:bold">🪙 ₹<span id="bal">0</span></div>
   </div>
 
-  <div id="connectionStatus" class="status">
-    Connecting to Firebase...
-  </div>
+  <div id="errorBox" class="alert hidden"></div>
 
-  <!-- LOGIN / REGISTER -->
+  <!-- LOGIN BOX -->
   <div id="authBox" class="card">
     <h3>🔥 Player Login / Register</h3>
-
-    <label for="name">Free Fire Name</label>
-    <input id="name" maxlength="40"
-           placeholder="Free Fire Name (Jaise: CR7)"
-           autocomplete="nickname">
-
-    <label for="uid">Free Fire UID</label>
-    <input id="uid" inputmode="numeric"
-           maxlength="30"
-           placeholder="Free Fire UID"
-           autocomplete="off">
-
-    <label for="pass">Password</label>
-    <input id="pass" type="password"
-           maxlength="100"
-           placeholder="Password"
-           autocomplete="current-password">
-
+    <input id="name" placeholder="Free Fire Name (Jaise: CR7)">
+    <input id="uid" placeholder="Free Fire UID (Jaise: 530335383)">
+    <input id="pass" type="password" placeholder="Password">
     <button id="authBtn">Login / Register</button>
-
-    <p class="small">
-      Apna Free Fire UID aur password sahi enter karein.
-    </p>
   </div>
 
   <!-- DASHBOARD -->
   <div id="appBox" class="hidden">
-
-    <div class="card">
-      <h3>🏆 Live Tournaments</h3>
-      <div id="matchesList">
-        <p class="muted">Loading matches...</p>
-      </div>
-    </div>
-
-    <button id="logoutBtn"
-            style="background:#333;margin-top:20px">
-      Logout
-    </button>
-
+    <h3>🏆 Live Tournaments</h3>
+    <div id="matchesList"><p style="color:var(--muted)">Loading matches...</p></div>
+    <button id="logoutBtn" style="background:#333;margin-top:20px">Logout</button>
   </div>
-
 </div>
 
 <script type="module">
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeFirestore, doc, getDoc, setDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-import {
-  initializeFirestore,
-  getFirestore,
-  doc,
-  getDoc,
-  setDoc,
-  onSnapshot,
-  collection
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-/*
-  IMPORTANT:
-  Apne Firebase project ki existing configuration use karo.
-*/
 const firebaseConfig = {
   apiKey: "AIzaSyDJpr9gktLVZgPOF2K89mOlubJrddw9OT0",
   authDomain: "zyvobettle.firebaseapp.com",
@@ -212,290 +57,81 @@ const firebaseConfig = {
   appId: "1:335264733948:web:30217c54d3e15c8b1bd579"
 };
 
-const $ = id => document.getElementById(id);
+function showError(msg) {
+  const eb = document.getElementById("errorBox");
+  eb.textContent = msg;
+  eb.classList.remove("hidden");
+}
 
 let db;
-let currentUserUid = null;
-let stopUserListener = null;
-let stopTournamentListener = null;
-
-function setStatus(message) {
-  $("connectionStatus").textContent = message;
-}
-
-function friendlyError(error) {
-  console.error("Firebase error:", error);
-
-  const code = error?.code || "unknown";
-  const message = error?.message || "Unknown error";
-
-  if (code === "permission-denied") {
-    return "Permission denied. Firestore Security Rules check karo.";
-  }
-
-  if (code === "unavailable") {
-    return "Firebase unavailable. Internet aur Firestore connection check karo.";
-  }
-
-  if (code === "unauthenticated") {
-    return "Authentication required. Login configuration check karo.";
-  }
-
-  if (code === "failed-precondition") {
-    return "Firestore configuration ya database condition check karo.";
-  }
-
-  if (code === "not-found") {
-    return "Firestore database nahi mila. Firebase Console check karo.";
-  }
-
-  return "Error (" + code + "): " + message;
-}
-
-/*
-  Initialize Firebase with long-polling support.
-  This may help on networks where normal Firestore
-  streaming connections fail.
-*/
 try {
-  const firebaseApp = initializeApp(firebaseConfig);
-
-  try {
-    db = initializeFirestore(firebaseApp, {
-      experimentalAutoDetectLongPolling: true
-    });
-  } catch (error) {
-    if (
-      error.code === "failed-precondition" ||
-      error.code === "already-initialized"
-    ) {
-      db = getFirestore(firebaseApp);
-    } else {
-      throw error;
-    }
-  }
-
-  setStatus("Firebase initialized. Checking database...");
-} catch (error) {
-  setStatus(friendlyError(error));
-  $("authBtn").disabled = true;
+  const app = initializeApp(firebaseConfig);
+  db = initializeFirestore(app, { experimentalForceLongPolling: true });
+} catch(e) {
+  showError("Firebase Init Error: " + e.message);
 }
 
-/*
-  Stop previous listeners to avoid duplicate connections.
-*/
-function stopListeners() {
-  if (stopUserListener) {
-    stopUserListener();
-    stopUserListener = null;
-  }
+const $ = id => document.getElementById(id);
 
-  if (stopTournamentListener) {
-    stopTournamentListener();
-    stopTournamentListener = null;
-  }
-}
-
-/*
-  Login / Register.
-
-  IMPORTANT:
-  This preserves the original demo database structure.
-  Storing plaintext passwords in Firestore is NOT secure.
-  Use Firebase Authentication before public launch.
-*/
 $("authBtn").addEventListener("click", async () => {
-  if (!db) {
-    alert("Firebase initialize nahi hua. Connection check karo.");
-    return;
-  }
+  const n = $("name").value.trim();
+  const u = $("uid").value.trim();
+  const p = $("pass").value.trim();
 
-  const name = $("name").value.trim();
-  const uid = $("uid").value.trim();
-  const password = $("pass").value;
-
-  if (!name || !uid || !password) {
-    alert("Sabhi fields bharna zaroori hai!");
-    return;
-  }
-
-  if (!/^[0-9]+$/.test(uid)) {
-    alert("Free Fire UID mein sirf numbers enter karo.");
-    return;
-  }
-
-  $("authBtn").disabled = true;
-  $("authBtn").textContent = "Please wait...";
+  if(!n || !u || !p) return alert("Sabhi fields bharna zaroori hai!");
 
   try {
-    const userRef = doc(db, "users", uid);
-    const snapshot = await getDoc(userRef);
-
-    if (snapshot.exists()) {
-      const userData = snapshot.data();
-
-      if (userData.password !== password) {
-        alert("Galat Password!");
-        return;
-      }
-
-      if (userData.name && userData.name !== name) {
-        const proceed = confirm(
-          "Is UID par doosra player name saved hai. Continue?"
-        );
-
-        if (!proceed) return;
-      }
-
-      localStorage.setItem("userUid", uid);
-      await startApp(uid);
-
+    const ref = doc(db, "users", u);
+    const snap = await getDoc(ref);
+    if(snap.exists()){
+      if(snap.data().password !== p) return alert("Galat Password!");
+      localStorage.setItem("userUid", u);
+      startApp(u);
     } else {
-      await setDoc(userRef, {
-        name: name,
-        uid: uid,
-        password: password,
-        wallet: 0,
-        createdAt: new Date().toISOString()
-      });
-
-      localStorage.setItem("userUid", uid);
-      await startApp(uid);
+      await setDoc(ref, { name: n, uid: u, password: p, wallet: 0 });
+      localStorage.setItem("userUid", u);
+      startApp(u);
     }
-
-  } catch (error) {
-    alert(friendlyError(error));
-    setStatus(friendlyError(error));
-  } finally {
-    $("authBtn").disabled = false;
-    $("authBtn").textContent = "Login / Register";
+  } catch(e) {
+    showError("Database Error: " + e.message);
   }
 });
 
-/*
-  Start player dashboard and live Firestore listeners.
-*/
-async function startApp(uid) {
-  if (!db) {
-    setStatus("Firebase database initialize nahi hua.");
-    return;
-  }
-
-  stopListeners();
-
-  currentUserUid = uid;
-
+function startApp(u){
   $("authBox").classList.add("hidden");
   $("appBox").classList.remove("hidden");
   $("topBal").classList.remove("hidden");
+  document.getElementById("errorBox").classList.add("hidden");
 
-  $("matchesList").innerHTML =
-    '<p class="muted">Loading matches...</p>';
-
-  setStatus("Connecting to player account...");
-
-  stopUserListener = onSnapshot(
-    doc(db, "users", uid),
-
-    snapshot => {
-      if (!snapshot.exists()) {
-        setStatus("Player account nahi mila. Dobara login karo.");
-        localStorage.removeItem("userUid");
-        return;
-      }
-
-      const userData = snapshot.data();
-
-      $("bal").textContent = Number(userData.wallet || 0).toFixed(2);
-
-      setStatus("✅ Firebase connected.");
-    },
-
-    error => {
-      setStatus(friendlyError(error));
+  onSnapshot(doc(db, "users", u), docSnap => {
+    if(docSnap.exists()){
+      $("bal").textContent = docSnap.data().wallet || 0;
     }
-  );
+  }, err => {
+    showError("Sync Error: " + err.message);
+  });
 
-  stopTournamentListener = onSnapshot(
-    collection(db, "tournaments"),
-
-    snapshot => {
-      const tournaments = snapshot.docs.map(item => ({
-        id: item.id,
-        ...item.data()
-      }));
-
-      if (tournaments.length === 0) {
-        $("matchesList").innerHTML =
-          '<p class="muted">Abhi koi match uplabdh nahi hai.</p>';
-        return;
-      }
-
-      /*
-        Render tournament information safely.
-        Do not inject database values directly into innerHTML.
-      */
-      const container = $("matchesList");
-      container.replaceChildren();
-
-      tournaments.forEach(tournament => {
-        const card = document.createElement("div");
-        card.className = "card";
-
-        const title = document.createElement("h4");
-        title.className = "match-title";
-        title.textContent = tournament.name || "Match";
-
-        const details = document.createElement("p");
-        details.textContent =
-          "Entry: ₹" + (tournament.entryFee ?? 0) +
-          " | Prize: ₹" + (tournament.prize ?? 0);
-
-        const room = document.createElement("p");
-        room.className = "green-text";
-
-        room.textContent =
-          "Room ID/Pass: " +
-          (tournament.roomId || "Match shuru hone par milega");
-
-        card.append(title, details, room);
-        container.appendChild(card);
-      });
-    },
-
-    error => {
-      $("matchesList").textContent = friendlyError(error);
-      setStatus(friendlyError(error));
-    }
-  );
+  onSnapshot(collection(db, "tournaments"), snap => {
+    const list = snap.docs.map(d => ({id: d.id, ...d.data()}));
+    $("matchesList").innerHTML = list.length ? list.map(t => `
+      <div class="card">
+        <h4>${t.name || "Match"}</h4>
+        <p>Entry: ₹${t.entryFee || 0} | Prize: ₹${t.prize || 0}</p>
+        <p style="color:var(--green)">Room ID/Pass: ${t.roomId || "Match shuru hone par milega"}</p>
+      </div>
+    `).join("") : "<p style='color:var(--muted)'>Abhi koi match uplabdh nahi hai.</p>";
+  }, err => {
+    showError("Matches Load Error: " + err.message);
+  });
 }
 
-/*
-  Logout.
-*/
 $("logoutBtn").addEventListener("click", () => {
-  stopListeners();
-
   localStorage.removeItem("userUid");
-  currentUserUid = null;
-
-  $("appBox").classList.add("hidden");
-  $("authBox").classList.remove("hidden");
-  $("topBal").classList.add("hidden");
-
-  $("pass").value = "";
-
-  setStatus("Logged out.");
+  location.reload();
 });
 
-/*
-  Restore saved demo session.
-*/
-const savedUid = localStorage.getItem("userUid");
-
-if (savedUid && db) {
-  startApp(savedUid);
-}
+const saved = localStorage.getItem("userUid");
+if(saved && db) startApp(saved);
 </script>
 </body>
 </html>
